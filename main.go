@@ -11,7 +11,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/hgfischer/goconf"
 	"github.com/msgbox/relay"
 	"github.com/msgbox/submission-agent"
@@ -30,8 +29,8 @@ func main() {
 	relay_external_port, _ := c.GetString("", "relay-external-port")
 	relay_internal_port, _ := c.GetString("", "relay-internal-port")
 
-	go bindIncoming(string(relay_external_port))
-	go bindOutgoing(string(relay_internal_port))
+	bindIncoming(string(relay_external_port))
+	bindOutgoing(string(relay_internal_port))
 
 	// Start Workers
 	incoming_workers, _ := c.GetInt("", "incoming-workers")
@@ -48,29 +47,22 @@ func main() {
 	// Start Submission Agent
 	submission_agent_port, _ := c.GetString("", "submission-port")
 	createSubmissionAgent(submission_agent_port)
-
-	for {
-	}
 }
 
 func bindIncoming(port string) {
-	inLn := relay.ListenIncoming(port)
-	defer inLn.Close()
+	go relay.ListenIncoming(port)
 }
 
 func bindOutgoing(port string) {
-	outLn := relay.ListenOutgoing(port)
-	defer outLn.Close()
+	go relay.ListenOutgoing(port)
 }
 
 func createIncomingWorker(tag string) {
-	fmt.Println("Creating an Incoming Worker")
-	workers.CreateIncoming(tag)
+	go workers.CreateIncoming(tag)
 }
 
 func createOutgoingWorker(tag string, port string) {
-	fmt.Println("Creating an Outgoing Worker")
-	workers.CreateOutgoing(tag, port)
+	go workers.CreateOutgoing(tag, port)
 }
 
 func createSubmissionAgent(port string) {
