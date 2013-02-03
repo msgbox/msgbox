@@ -20,7 +20,7 @@ import (
 func main() {
 
 	// Read Config File
-	c, err := conf.ReadConfigFile("msgbox.conf")
+	c, err := conf.ReadConfigFile("/etc/msgbox/msgbox.conf")
 	if err != nil {
 		// Handle Error
 	}
